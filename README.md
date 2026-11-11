@@ -1,13 +1,49 @@
+# NearDrop Enhanced
+
+An unofficial fork of [NearDrop by Grishka](https://github.com/grishka/NearDrop), based on upstream v2.2.2. It is not affiliated with Google or the original author.
+
+## Changes in this fork
+
+- Adds a standard macOS window and Dock icon. Clicking the menu bar icon opens the control window.
+- Adds a discoverability switch. Turning it off stops Bonjour advertising and the listener for new incoming connections; the setting is remembered across launches.
+- Shows recent incoming transfers for the current app session.
+- Lets a click on an incoming-transfer notification open an explicit accept/decline prompt with the sender and PIN.
+
+The transfer-history list is kept in memory and clears when the app quits. This fork has been built and its control window opened on macOS 27.2 (Apple silicon). Transfers with an Android device have not yet been tested.
+
+## Build
+
+Open `NearDrop.xcodeproj` in Xcode, or run:
+
+```sh
+xcodebuild -project NearDrop.xcodeproj \
+  -scheme NearDrop \
+  -configuration Release \
+  -destination 'platform=macOS' \
+  MACOSX_DEPLOYMENT_TARGET=12.0 \
+  CODE_SIGNING_ALLOWED=YES \
+  CODE_SIGN_IDENTITY=- \
+  build
+```
+
+The deployment-target override is needed with the Xcode version used for this fork; the project retains the upstream target setting.
+
+## Upstream and license
+
+The original source and protocol work belong to [grishka/NearDrop](https://github.com/grishka/NearDrop). The upstream project is released under the Unlicense; see [`UNLICENSE`](UNLICENSE). Changes in this fork were prepared with AI assistance. The upstream README says it does not accept AI-assisted contributions, so this fork is maintained independently and is not intended as a pull request to upstream.
+
+---
+
 **NearDrop** is a partial implementation of [Google's Nearby Share](https://blog.google/products/android/nearby-share/)/Quick Share for macOS.
 
 [Protocol documentation](/PROTOCOL.md) is available separately.
 
-The app lives in your menu bar and saves files to your downloads folder. It's that simple, really.
+The app is available from the menu bar and its main window. Received files are saved to your downloads folder.
 
 ## Limitations
 
 * **Wi-Fi LAN only**. Your Android device and your Mac need to be on the same network for this app to work. Google's implementation supports multiple mediums, including Wi-Fi Direct, Wi-Fi hotspot, Bluetooth, some kind of 5G peer-to-peer connection, and even a WebRTC-based protocol that goes over the internet through Google servers. Wi-Fi direct isn't supported on macOS (Apple has their own, incompatible, AWDL thing, used in AirDrop). Bluetooth needs further reverse engineering.
-* **Visible to everyone on your network at all times** while the app is running. Limited visibility (contacts etc) requires talking to Google servers, and becoming temporarily visible requires listening for whatever triggers the "device nearby is sharing" notification.
+* **When discoverability is enabled, the Mac is visible to everyone on the local network.** Turn off the visibility switch in the control window to stop advertising and accepting new connections. Limited visibility (contacts etc) requires talking to Google servers, and becoming temporarily visible requires listening for whatever triggers the "device nearby is sharing" notification.
 
 ## Installation
 
@@ -75,7 +111,7 @@ To make it more easily accessible and/or if you don't want to install Google Fil
 
 #### Can the menu bar icon be removed?
 
-Yes. Drag the icon off the menu bar while holding cmd. To bring it back, launch the app a second time, while it's already running.
+The Dock icon reopens the control window. If the menu bar icon is hidden, quit and relaunch NearDrop Enhanced to restore it.
 
 #### I'm sending something to my Mac, the Android device displays a PIN code, but nothing happens on the Mac
 
